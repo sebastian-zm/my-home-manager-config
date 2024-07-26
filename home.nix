@@ -38,6 +38,7 @@ in {
     pkgs.steam-tui
     pkgs.proton-pass
     pkgs.unzip
+    pkgs.simple-http-server
     # # You can also create simple shell scripts directly inside your
     # # configuration. For example, this adds a command 'my-hello' to your
     # # environment:
@@ -125,6 +126,11 @@ in {
     ];
   };
 
+  programs.fzf = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+
   programs.librewolf.enable = true;
   programs.librewolf.settings = {
     "privacy.resistFingerprinting.letterboxing" = true;
@@ -158,9 +164,9 @@ in {
 
   wayland.windowManager.sway = {
     enable = true;
-    checkConfig = false;
+    # checkConfig = false;
     wrapperFeatures.gtk = true;
-    config = {
+    config = rec {
       terminal = "alacritty";
       modifier = "Mod4";
       defaultWorkspace = "workspace number 1";
@@ -177,6 +183,9 @@ in {
       fonts = {
         names = [ "Cascadia Code" ];
         size = 10.0;
+      };
+      keybindings = lib.mkOptionDefault {
+        "${modifier}+Shift+Return" = "exec ${pkgs.librewolf}/bin/librewolf";
       };
     };
   };
