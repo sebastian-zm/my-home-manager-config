@@ -1,5 +1,5 @@
 { config, pkgs, lib, ... }:
-let
+  let
   nixos-artwork = pkgs.fetchFromGitHub {
     owner = "NixOS";
     repo = "nixos-artwork";
@@ -103,6 +103,12 @@ in {
     };
   };
 
+  programs.direnv = {
+    enable = true;
+    enableZshIntegration = true;
+    nix-direnv.enable = true;
+  };
+
   programs.vim = {
     enable = true;
     defaultEditor = true;
@@ -164,15 +170,14 @@ in {
 
   wayland.windowManager.sway = {
     enable = true;
-    # checkConfig = false;
     wrapperFeatures.gtk = true;
     config = rec {
       terminal = "alacritty";
       modifier = "Mod4";
       defaultWorkspace = "workspace number 1";
       input."type:keyboard" = {
-        xkb_layout = "es";
-        # xkb_variant = "altgr-intl";
+        xkb_layout = "us";
+        xkb_variant = "altgr-intl";
       };
       input."type:touchpad" = {
         tap = "enabled";
