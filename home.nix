@@ -7,13 +7,6 @@
     hash = "sha256-78FyNyGtDZogJUWcCT6A/T2MK87nGN/muC7ANH1b1V8=";
   };
 in {
-  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-    "steam"
-    "steam-original"
-    "steam-run"
-    "steamcmd"
-  ];
-
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "sebastian";
@@ -34,11 +27,10 @@ in {
     pkgs.cascadia-code
     pkgs.xfce.thunar
     pkgs.wl-clipboard
-    pkgs.steam
-    pkgs.steam-tui
     pkgs.proton-pass
     pkgs.unzip
     pkgs.simple-http-server
+    pkgs.devcontainer
     # # You can also create simple shell scripts directly inside your
     # # configuration. For example, this adds a command 'my-hello' to your
     # # environment:
@@ -88,6 +80,8 @@ in {
     enable = true;
   };
 
+  programs.bash.enable = true;
+
   programs.git = {
     enable = true;
     userName = "Sebastian";
@@ -130,7 +124,7 @@ in {
 
   programs.fzf = {
     enable = true;
-    enableZshIntegration = true;
+    enableBashIntegration = true;
   };
 
   programs.librewolf.enable = true;
