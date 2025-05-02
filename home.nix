@@ -13,6 +13,17 @@ let
   #     ];
   #   }
   # );
+  
+  # ciscoPacketTracer8 = pkgs.ciscoPacketTracer8.overrideAttrs (
+  #   attrs: {
+  #     propagatedBuildInputs = attrs.propagatedBuildInputs or [] ++ [
+  #       pkgs.kdePackages.qtwebengine
+  #     ];
+  #     nativeBuildInputs = attrs.nativeBuildInputs or [] ++ [
+  #       pkgs.kdePackages.wrapQtAppsHook
+  #     ];
+  #   }
+  # );
   # ktechlab = config.lib.nixGL.wrap (pkgs.stdenv.mkDerivation rec {
   #   pname = "ktechlab";
   #   version = "0.50.0";
@@ -72,10 +83,10 @@ in
     # # You can also create simple shell scripts directly inside your
     # # configuration. For example, this adds a command 'my-hello' to your
     # # environment:
-    (pkgs.writeShellScriptBin "vim-plugin" ''
-      find $HOME/.vim/pack/*/start/ -maxdepth 1 -mindepth 1 -type d | ${pkgs.parallel}/bin/parallel git -C {} pull
-      ${pkgs.vim}/bin/vim -u NONE -c "helptags ALL" -c q
-    '')
+    # (pkgs.writeShellScriptBin "vim-plugin" ''
+    #   find $HOME/.vim/pack/*/start/ -maxdepth 1 -mindepth 1 -type d | ${pkgs.parallel}/bin/parallel git -C {} pull
+    #   ${pkgs.vim}/bin/vim -u NONE -c "helptags ALL" -c q
+    # '')
     (pkgs.writeShellScriptBin "llm" ''
       ${pkgs.ollama}/bin/ollama run gemma3
     '')
@@ -97,11 +108,10 @@ in
     pkgs.bat
     pkgs.btop
     pkgs.dust
-    pkgs.vim
     pkgs.fzf
     pkgs.ollama
     pkgs.imagemagick
-    (config.lib.nixGL.wrap pkgs.ciscoPacketTracer8)
+    (config.lib.nixGL.wrap stablepkgs.ciscoPacketTracer8)
   ];
 
   programs.librewolf = {
@@ -131,6 +141,9 @@ in
   programs.neovim = {
     enable = true;
     defaultEditor = true;
+    viAlias = true;
+    vimAlias = true;
+    vimdiffAlias = true;
     plugins = with pkgs.vimPlugins; [
       vim-vinegar
       vim-unimpaired
@@ -205,7 +218,15 @@ in
   nixpkgs.config.allowUnfree = true;
 
   # Let Home Manager install and manage itself.
-  programs.home-manager.enable = true;
+  programs.home-manager = {
+    enable = true;
+  };
+
+  services.home-manager.autoExpire = {
+    enable = true;
+    frequency = "weekly";
+    store.cleanup = true;
+  };
 
   systemd.user = {
     services = {
