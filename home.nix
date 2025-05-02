@@ -1,12 +1,41 @@
-{ config, pkgs, lib, ... }:
-  let
-  nixos-artwork = pkgs.fetchFromGitHub {
-    owner = "NixOS";
-    repo = "nixos-artwork";
-    rev = "de03e887f03037e7e781a678b57fdae603c9ca20";
-    hash = "sha256-78FyNyGtDZogJUWcCT6A/T2MK87nGN/muC7ANH1b1V8=";
-  };
-in {
+{ config, pkgs, ... }:
+
+let
+  stablepkgs = import <nixos-stable> { config.allowUnfree = true; };
+  nixgl = import <nixgl> {};
+  # exo = pkgs.exo.overrideAttrs (
+  #   attrs: {
+  #     propagatedBuildInputs = attrs.propagatedBuildInputs or [] ++ [
+  #       pkgs.python312Packages.torch
+  #       pkgs.python312Packages.flax
+  #       pkgs.python312Packages.tensorflow
+  #       pkgs.python312Packages.llvmlite
+  #     ];
+  #   }
+  # );
+  # ktechlab = config.lib.nixGL.wrap (pkgs.stdenv.mkDerivation rec {
+  #   pname = "ktechlab";
+  #   version = "0.50.0";
+  #   src = pkgs.fetchgit {
+  #     url = "https://invent.kde.org/sdk/ktechlab.git";
+  #     rev = "v${version}";
+  #     hash = "sha256-de+MJZqDKToarHzfTg5/f/3f7A5EKAx+bKgU/pljNZg=";
+  #   };
+  #   buildInputs = with pkgs; [
+  #     qt5.qtbase
+  #     plasma5Packages.kdeFrameworks.plasma-framework
+  #     plasma5Packages.kdeFrameworks.khtml
+  #     plasma5Packages.kdeFrameworks.kparts
+  #     plasma5Packages.kdeFrameworks.ktexteditor
+  #   ];
+  #   nativeBuildInputs = with pkgs; [
+  #     cmake
+  #     extra-cmake-modules
+  #     qt5.wrapQtAppsHook
+  #   ];
+  # });
+in
+{
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "sebastian";
@@ -21,23 +50,122 @@ in {
   # release notes.
   home.stateVersion = "24.05"; # Please read the comment before changing.
 
+  nixGL = {
+    packages = import <nixgl> {};
+    defaultWrapper = "mesa";
+    installScripts = [ "mesa" ];
+  };
+
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = [
-    pkgs.cascadia-code
-    pkgs.xfce.thunar
-    pkgs.wl-clipboard
-    pkgs.proton-pass
-    pkgs.unzip
-    pkgs.simple-http-server
-    pkgs.devcontainer
+    # # Adds the 'hello' command to your environment. It prints a friendly
+    # # "Hello, world!" when run.
+    # pkgs.hello
+
+    # # It is sometimes useful to fine-tune packages, for example, by applying
+    # # overrides. You can do that directly here, just don't forget the
+    # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
+    # # fonts?
+    # (pkgs.nerdfonts.override { fonts = [ "FantasqueSansMono" ]; })
+
     # # You can also create simple shell scripts directly inside your
     # # configuration. For example, this adds a command 'my-hello' to your
     # # environment:
-    # (pkgs.writeShellScriptBin "my-hello" ''
-    #   echo "Hello, ${config.home.username}!"
-    # '')
+    (pkgs.writeShellScriptBin "vim-plugin" ''
+      find $HOME/.vim/pack/*/start/ -maxdepth 1 -mindepth 1 -type d | ${pkgs.parallel}/bin/parallel git -C {} pull
+      ${pkgs.vim}/bin/vim -u NONE -c "helptags ALL" -c q
+    '')
+    (pkgs.writeShellScriptBin "llm" ''
+      ${pkgs.ollama}/bin/ollama run gemma3
+    '')
+    # Uses system podman
+    (pkgs.writeShellScriptBin "docker" ''
+      PODMAN_USERNS=keep-id
+      exec podman "$@"
+    '')
+
+    pkgs.exo
+    pkgs.tcpdump
+    pkgs.parallel
+    pkgs.libtree
+    pkgs.jq
+    pkgs.websocat
+    pkgs.ntfy-sh
+    pkgs.simple-http-server
+    pkgs.nmap
+    pkgs.bat
+    pkgs.btop
+    pkgs.dust
+    pkgs.vim
+    pkgs.fzf
+    pkgs.ollama
+    pkgs.imagemagick
+    (config.lib.nixGL.wrap pkgs.ciscoPacketTracer8)
   ];
+
+  programs.librewolf = {
+    enable = true;
+    settings = {
+      "privacy.resistFingerprinting.letterboxing" = true;
+      "browser.safebrowsing.malware.enabled" = true;
+      "browser.safebrowsing.phishing.enabled" = true;
+      "browser.safebrowsing.blockedURIs.enabled" = true;
+      "browser.safebrowsing.downloads.enabled" = true;
+      "browser.safebrowsing.provider.google4.gethashURL" = "https://safebrowsing.googleapis.com/v4/fullHashes:find?$ct=application/x-protobuf&key=%GOOGLE_SAFEBROWSING_API_KEY%&$httpMethod=POST";
+      "browser.safebrowsing.provider.google4.updateURL" = "https://safebrowsing.googleapis.com/v4/threatListUpdates:fetch?$ct=application/x-protobuf&key=%GOOGLE_SAFEBROWSING_API_KEY%&$httpMethod=POST";
+      "browser.safebrowsing.provider.google.gethashURL" = "https://safebrowsing.google.com/safebrowsing/gethash?client=SAFEBROWSING_ID&appver=%MAJOR_VERSION%&pver=2.2";
+      "browser.safebrowsing.provider.google.updateURL" = "https://safebrowsing.google.com/safebrowsing/downloads?client=SAFEBROWSING_ID&appver=%MAJOR_VERSION%&pver=2.2&key=%GOOGLE_SAFEBROWSING_API_KEY%";
+    };
+  };
+
+  programs.vscode = {
+    enable = true;
+    package = config.lib.nixGL.wrap pkgs.vscode;
+    profiles.default.extensions = with pkgs.vscode-extensions; [
+      ms-vscode-remote.remote-containers
+      asvetliakov.vscode-neovim
+    ];
+  };
+
+  programs.neovim = {
+    enable = true;
+    defaultEditor = true;
+    plugins = with pkgs.vimPlugins; [
+      vim-vinegar
+      vim-unimpaired
+      vim-surround
+      vim-sleuth
+      vim-sensible
+      vim-repeat
+      vim-rails
+      vim-ragtag
+      vim-pandoc-syntax
+      vim-pandoc
+      vim-fugitive
+      vim-eunuch
+      vim-endwise
+      vim-abolish
+      fzf-vim
+      editorconfig-vim
+    ];
+  };
+
+  programs.fzf = {
+    enable = true;
+    enableBashIntegration = true;
+  };
+
+  programs.git = {
+    enable = true;
+    userName = "Sebastian";
+    userEmail = "sebastian@example.invalid";
+    extraConfig = {
+      init = {
+        defaultBranch = "main";
+      };
+    };
+  };
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
@@ -71,119 +199,58 @@ in {
   #  /etc/profiles/per-user/sebastian/etc/profile.d/hm-session-vars.sh
   #
   home.sessionVariables = {
-    MOZ_USE_XINPUT2 = "1";
-    NIXOS_OZONE_WL = "1";
+    # EDITOR = "vi";
   };
+
+  nixpkgs.config.allowUnfree = true;
 
   # Let Home Manager install and manage itself.
-  programs.home-manager = {
-    enable = true;
-  };
+  programs.home-manager.enable = true;
 
-  programs.bash.enable = true;
+  systemd.user = {
+    services = {
+      
+      # exo = {
+      #   Unit = {
+      #     Description = "Run your own AI cluster at home with everyday devices.";
+      #   };
+      #   Install = {
+      #     WantedBy = [ "default.target" ];
+      #   };
+      #   Service = {
+      #     ExecStart = "${exo}/bin/exo --disable-tui";
+      #   };
+      # };
 
-  programs.git = {
-    enable = true;
-    userName = "Sebastian";
-    userEmail = "sebastian@example.invalid";
-    extraConfig = {
-      init = {
-        defaultBranch = "main";
+      simple-http-server = {
+        Unit = {
+          Description = "An http server to share files";
+          Wants = [ "var-home-sebastian-Public.mount" ];
+        };
+        Install = {
+          WantedBy = [ "default.target" ];
+        };
+        Service = {
+          ExecStart = "${pkgs.simple-http-server}/bin/simple-http-server --upload --port 4080";
+          WorkingDirectory = "/home/sebastian/Public/";
+        };
+      };
+
+      ollama = {
+        Unit = {
+          Description = "Ollama service";
+          After = "network-online.target";
+        };
+        Service = {
+          ExecStart = "${pkgs.ollama}/bin/ollama serve";
+          Restart = "always";
+          RestartSec = 10;
+          Environment = "PATH=$PATH";
+        };
+        Install = {
+          WantedBy = [ "default.target" ];
+        };
       };
     };
   };
-
-  programs.direnv = {
-    enable = true;
-    enableBashIntegration = true;
-    nix-direnv.enable = true;
-  };
-
-  programs.vim = {
-    enable = true;
-    defaultEditor = true;
-    plugins = with pkgs.vimPlugins; [
-      vim-vinegar
-      vim-unimpaired
-      vim-surround
-      vim-sleuth
-      vim-sensible
-      vim-repeat
-      vim-rails
-      vim-ragtag
-      vim-pandoc-syntax
-      vim-pandoc
-      vim-fugitive
-      vim-eunuch
-      vim-endwise
-      vim-abolish
-      fzf-vim
-      editorconfig-vim
-    ];
-  };
-
-  programs.fzf = {
-    enable = true;
-    enableBashIntegration = true;
-  };
-
-  programs.librewolf.enable = true;
-  programs.librewolf.settings = {
-    "privacy.resistFingerprinting.letterboxing" = true;
-    "browser.safebrowsing.malware.enabled" = true;
-    "browser.safebrowsing.phishing.enabled" = true;
-    "browser.safebrowsing.blockedURIs.enabled" = true;
-    "browser.safebrowsing.downloads.enabled" = true;
-    "browser.safebrowsing.provider.google4.gethashURL" = "https://safebrowsing.googleapis.com/v4/fullHashes:find?$ct=application/x-protobuf&key=%GOOGLE_SAFEBROWSING_API_KEY%&$httpMethod=POST";
-    "browser.safebrowsing.provider.google4.updateURL" = "https://safebrowsing.googleapis.com/v4/threatListUpdates:fetch?$ct=application/x-protobuf&key=%GOOGLE_SAFEBROWSING_API_KEY%&$httpMethod=POST";
-    "browser.safebrowsing.provider.google.gethashURL" = "https://safebrowsing.google.com/safebrowsing/gethash?client=SAFEBROWSING_ID&appver=%MAJOR_VERSION%&pver=2.2";
-    "browser.safebrowsing.provider.google.updateURL" = "https://safebrowsing.google.com/safebrowsing/downloads?client=SAFEBROWSING_ID&appver=%MAJOR_VERSION%&pver=2.2&key=%GOOGLE_SAFEBROWSING_API_KEY%";
-  };
-
-  programs.alacritty = {
-    enable = true;
-    settings = {
-      font.normal.family = "Cascadia Code";
-      font.bold = {
-        family = "Cascadia Code";
-        style = "bold";
-      };
-      font.italic = {
-        family = "Cascadia Code";
-        style = "italic";
-      };
-    };
-  };
-
-  services.mako.enable = true;
-  services.kanshi.enable = true;
-
-  wayland.windowManager.sway = {
-    enable = true;
-    wrapperFeatures.gtk = true;
-    config = rec {
-      terminal = "alacritty";
-      modifier = "Mod4";
-      defaultWorkspace = "workspace number 1";
-      input."type:keyboard" = {
-        xkb_layout = "us";
-        xkb_variant = "altgr-intl";
-      };
-      input."type:touchpad" = {
-        tap = "enabled";
-      };
-      output."*" = {
-        bg = "${nixos-artwork}/wallpapers/nixos-wallpaper-catppuccin-frappe.png fill";
-      };
-      fonts = {
-        names = [ "Cascadia Code" ];
-        size = 10.0;
-      };
-      keybindings = lib.mkOptionDefault {
-        "${modifier}+Shift+Return" = "exec ${pkgs.librewolf}/bin/librewolf";
-      };
-    };
-  };
-
-  fonts.fontconfig.enable = true;
 }
