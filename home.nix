@@ -96,7 +96,6 @@ in
       exec podman "$@"
     '')
 
-    pkgs.exo
     pkgs.tcpdump
     pkgs.parallel
     pkgs.libtree
@@ -112,21 +111,40 @@ in
     pkgs.ollama
     pkgs.imagemagick
     (config.lib.nixGL.wrap stablepkgs.ciscoPacketTracer8)
+    (config.lib.nixGL.wrap pkgs.pinta)
+    (config.lib.nixGL.wrap pkgs.minder)
+    (config.lib.nixGL.wrap pkgs.whatsie)
+    (config.lib.nixGL.wrap pkgs.flowblade)
+    (config.lib.nixGL.wrap pkgs.onlyoffice-desktopeditors)
+    (config.lib.nixGL.wrap pkgs.signal-desktop)
+    (config.lib.nixGL.wrap pkgs.prismlauncher)
+    (config.lib.nixGL.wrap pkgs.inkscape-with-extensions)
+    (config.lib.nixGL.wrap pkgs.krita)
+    (config.lib.nixGL.wrap pkgs.azahar)
+    (config.lib.nixGL.wrap pkgs.kdePackages.kcalc)
+    (config.lib.nixGL.wrap pkgs.kdePackages.kalgebra)
+    (config.lib.nixGL.wrap pkgs.kdePackages.skanpage)
+    (config.lib.nixGL.wrap pkgs.kdePackages.kamera)
   ];
 
-  programs.librewolf = {
+  # programs.librewolf = {
+  #   enable = true;
+  #   settings = {
+  #     "privacy.resistFingerprinting.letterboxing" = true;
+  #     "browser.safebrowsing.malware.enabled" = true;
+  #     "browser.safebrowsing.phishing.enabled" = true;
+  #     "browser.safebrowsing.blockedURIs.enabled" = true;
+  #     "browser.safebrowsing.downloads.enabled" = true;
+  #     "browser.safebrowsing.provider.google4.gethashURL" = "https://safebrowsing.googleapis.com/v4/fullHashes:find?$ct=application/x-protobuf&key=%GOOGLE_SAFEBROWSING_API_KEY%&$httpMethod=POST";
+  #     "browser.safebrowsing.provider.google4.updateURL" = "https://safebrowsing.googleapis.com/v4/threatListUpdates:fetch?$ct=application/x-protobuf&key=%GOOGLE_SAFEBROWSING_API_KEY%&$httpMethod=POST";
+  #     "browser.safebrowsing.provider.google.gethashURL" = "https://safebrowsing.google.com/safebrowsing/gethash?client=SAFEBROWSING_ID&appver=%MAJOR_VERSION%&pver=2.2";
+  #     "browser.safebrowsing.provider.google.updateURL" = "https://safebrowsing.google.com/safebrowsing/downloads?client=SAFEBROWSING_ID&appver=%MAJOR_VERSION%&pver=2.2&key=%GOOGLE_SAFEBROWSING_API_KEY%";
+  #   };
+  # };
+
+  programs.freetube = {
     enable = true;
-    settings = {
-      "privacy.resistFingerprinting.letterboxing" = true;
-      "browser.safebrowsing.malware.enabled" = true;
-      "browser.safebrowsing.phishing.enabled" = true;
-      "browser.safebrowsing.blockedURIs.enabled" = true;
-      "browser.safebrowsing.downloads.enabled" = true;
-      "browser.safebrowsing.provider.google4.gethashURL" = "https://safebrowsing.googleapis.com/v4/fullHashes:find?$ct=application/x-protobuf&key=%GOOGLE_SAFEBROWSING_API_KEY%&$httpMethod=POST";
-      "browser.safebrowsing.provider.google4.updateURL" = "https://safebrowsing.googleapis.com/v4/threatListUpdates:fetch?$ct=application/x-protobuf&key=%GOOGLE_SAFEBROWSING_API_KEY%&$httpMethod=POST";
-      "browser.safebrowsing.provider.google.gethashURL" = "https://safebrowsing.google.com/safebrowsing/gethash?client=SAFEBROWSING_ID&appver=%MAJOR_VERSION%&pver=2.2";
-      "browser.safebrowsing.provider.google.updateURL" = "https://safebrowsing.google.com/safebrowsing/downloads?client=SAFEBROWSING_ID&appver=%MAJOR_VERSION%&pver=2.2&key=%GOOGLE_SAFEBROWSING_API_KEY%";
-    };
+    package = config.lib.nixGL.wrap pkgs.freetube; 
   };
 
   programs.vscode = {
@@ -145,16 +163,16 @@ in
     vimAlias = true;
     vimdiffAlias = true;
     plugins = with pkgs.vimPlugins; [
-      vim-vinegar
+      # vim-vinegar
       vim-unimpaired
       vim-surround
       vim-sleuth
       vim-sensible
       vim-repeat
-      vim-rails
+      # vim-rails
       vim-ragtag
-      vim-pandoc-syntax
-      vim-pandoc
+      # vim-pandoc-syntax
+      # vim-pandoc
       vim-fugitive
       vim-eunuch
       vim-endwise
