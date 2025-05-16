@@ -3,48 +3,6 @@
 let
   stablepkgs = import <nixos-stable> { config.allowUnfree = true; };
   nixgl = import <nixgl> {};
-  # exo = pkgs.exo.overrideAttrs (
-  #   attrs: {
-  #     propagatedBuildInputs = attrs.propagatedBuildInputs or [] ++ [
-  #       pkgs.python312Packages.torch
-  #       pkgs.python312Packages.flax
-  #       pkgs.python312Packages.tensorflow
-  #       pkgs.python312Packages.llvmlite
-  #     ];
-  #   }
-  # );
-  
-  # ciscoPacketTracer8 = pkgs.ciscoPacketTracer8.overrideAttrs (
-  #   attrs: {
-  #     propagatedBuildInputs = attrs.propagatedBuildInputs or [] ++ [
-  #       pkgs.kdePackages.qtwebengine
-  #     ];
-  #     nativeBuildInputs = attrs.nativeBuildInputs or [] ++ [
-  #       pkgs.kdePackages.wrapQtAppsHook
-  #     ];
-  #   }
-  # );
-  # ktechlab = config.lib.nixGL.wrap (pkgs.stdenv.mkDerivation rec {
-  #   pname = "ktechlab";
-  #   version = "0.50.0";
-  #   src = pkgs.fetchgit {
-  #     url = "https://invent.kde.org/sdk/ktechlab.git";
-  #     rev = "v${version}";
-  #     hash = "sha256-de+MJZqDKToarHzfTg5/f/3f7A5EKAx+bKgU/pljNZg=";
-  #   };
-  #   buildInputs = with pkgs; [
-  #     qt5.qtbase
-  #     plasma5Packages.kdeFrameworks.plasma-framework
-  #     plasma5Packages.kdeFrameworks.khtml
-  #     plasma5Packages.kdeFrameworks.kparts
-  #     plasma5Packages.kdeFrameworks.ktexteditor
-  #   ];
-  #   nativeBuildInputs = with pkgs; [
-  #     cmake
-  #     extra-cmake-modules
-  #     qt5.wrapQtAppsHook
-  #   ];
-  # });
 in
 {
   # Home Manager needs a bit of information about you and the paths it should
@@ -62,85 +20,94 @@ in
   home.stateVersion = "24.05"; # Please read the comment before changing.
 
   nixGL = {
-    packages = import <nixgl> {};
+    packages = nixgl;
     defaultWrapper = "mesa";
     installScripts = [ "mesa" ];
   };
 
   # The home.packages option allows you to install Nix packages into your
   # environment.
-  home.packages = [
-    # # Adds the 'hello' command to your environment. It prints a friendly
-    # # "Hello, world!" when run.
-    # pkgs.hello
-
-    # # It is sometimes useful to fine-tune packages, for example, by applying
-    # # overrides. You can do that directly here, just don't forget the
-    # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
-    # # fonts?
-    # (pkgs.nerdfonts.override { fonts = [ "FantasqueSansMono" ]; })
-
-    # # You can also create simple shell scripts directly inside your
-    # # configuration. For example, this adds a command 'my-hello' to your
-    # # environment:
+  home.packages = with stablepkgs; [
     # (pkgs.writeShellScriptBin "vim-plugin" ''
     #   find $HOME/.vim/pack/*/start/ -maxdepth 1 -mindepth 1 -type d | ${pkgs.parallel}/bin/parallel git -C {} pull
     #   ${pkgs.vim}/bin/vim -u NONE -c "helptags ALL" -c q
     # '')
-    (pkgs.writeShellScriptBin "llm" ''
-      ${pkgs.ollama}/bin/ollama run gemma3
+    (writeShellScriptBin "llm" ''
+      ${pkgs.ollama}/bin/ollama run qwen3:30b
+    '')
+    (writeShellScriptBin "git-to-llm" ''
+      GIT=${pkgs.git}/bin/git
+      # Ensure we're in a git repository
+      if ! git rev-parse --is-inside-work-tree &>/dev/null; then
+          echo "Error: Not in a git repository."
+          exit 1
+      fi
+
+      # Retrieve the list of files (tracked, untracked, and not ignored)
+      git ls-files --cached --others --exclude-standard | while read -r file; do
+          echo 'file path: `'"$file"'`'
+          echo 'file contents: '
+
+          echo '```'
+          cat "$file"
+          echo '```'
+      done
     '')
     # Uses system podman
-    (pkgs.writeShellScriptBin "docker" ''
-      PODMAN_USERNS=keep-id
-      exec podman "$@"
+    (writeShellScriptBin "docker" ''
+      PODMAN_COMPOSE_PROVIDER=${docker-compose}/bin/docker-compose DOCKER_HOST=unix:///run/user/$UID/podman/podman.sock PODMAN_USERNS=keep-id:uid=1000,gid=1000 exec podman "$@"
     '')
 
-    pkgs.tcpdump
-    pkgs.parallel
-    pkgs.libtree
-    pkgs.jq
-    pkgs.websocat
-    pkgs.ntfy-sh
-    pkgs.simple-http-server
-    pkgs.nmap
-    pkgs.bat
-    pkgs.btop
-    pkgs.dust
-    pkgs.fzf
+    docker-compose
+    tcpdump
+    wl-clipboard
+    parallel
+    libtree
+    jq
+    uv
+    nodenv
+    websocat
+    pkgs.cloudflared
+    simple-http-server
+    nmap
+    bat
+    btop
+    dust
     pkgs.ollama
-    pkgs.imagemagick
-    (config.lib.nixGL.wrap stablepkgs.ciscoPacketTracer8)
-    (config.lib.nixGL.wrap pkgs.pinta)
-    (config.lib.nixGL.wrap pkgs.minder)
-    (config.lib.nixGL.wrap pkgs.whatsie)
-    (config.lib.nixGL.wrap pkgs.flowblade)
-    (config.lib.nixGL.wrap pkgs.onlyoffice-desktopeditors)
-    (config.lib.nixGL.wrap pkgs.signal-desktop)
-    (config.lib.nixGL.wrap pkgs.prismlauncher)
-    (config.lib.nixGL.wrap pkgs.inkscape-with-extensions)
-    (config.lib.nixGL.wrap pkgs.krita)
-    (config.lib.nixGL.wrap pkgs.azahar)
-    (config.lib.nixGL.wrap pkgs.kdePackages.kcalc)
-    (config.lib.nixGL.wrap pkgs.kdePackages.kalgebra)
-    (config.lib.nixGL.wrap pkgs.kdePackages.skanpage)
-    (config.lib.nixGL.wrap pkgs.kdePackages.kamera)
-  ];
+    imagemagick
+  ] ++ (map config.lib.nixGL.wrap [
+    ciscoPacketTracer8
+    pinta
+    minder
+    pkgs.whatsie
+    flowblade
+    wpsoffice
+    libreoffice
+    pkgs.signal-desktop
+    prismlauncher
+    inkscape-with-extensions
+    krita
+    pkgs.azahar
+    kdePackages.kcalc
+    kdePackages.kalgebra
+    kdePackages.skanpage
+    kdePackages.kamera
+  ]);
 
-  # programs.librewolf = {
-  #   enable = true;
-  #   settings = {
-  #     "privacy.resistFingerprinting.letterboxing" = true;
-  #     "browser.safebrowsing.malware.enabled" = true;
-  #     "browser.safebrowsing.phishing.enabled" = true;
-  #     "browser.safebrowsing.blockedURIs.enabled" = true;
-  #     "browser.safebrowsing.downloads.enabled" = true;
-  #     "browser.safebrowsing.provider.google4.gethashURL" = "https://safebrowsing.googleapis.com/v4/fullHashes:find?$ct=application/x-protobuf&key=%GOOGLE_SAFEBROWSING_API_KEY%&$httpMethod=POST";
-  #     "browser.safebrowsing.provider.google4.updateURL" = "https://safebrowsing.googleapis.com/v4/threatListUpdates:fetch?$ct=application/x-protobuf&key=%GOOGLE_SAFEBROWSING_API_KEY%&$httpMethod=POST";
-  #     "browser.safebrowsing.provider.google.gethashURL" = "https://safebrowsing.google.com/safebrowsing/gethash?client=SAFEBROWSING_ID&appver=%MAJOR_VERSION%&pver=2.2";
-  #     "browser.safebrowsing.provider.google.updateURL" = "https://safebrowsing.google.com/safebrowsing/downloads?client=SAFEBROWSING_ID&appver=%MAJOR_VERSION%&pver=2.2&key=%GOOGLE_SAFEBROWSING_API_KEY%";
-  #   };
-  # };
+  programs.librewolf = {
+    enable = true;
+    settings = {
+      "privacy.resistFingerprinting.letterboxing" = true;
+      "browser.safebrowsing.malware.enabled" = true;
+      "browser.safebrowsing.phishing.enabled" = true;
+      "browser.safebrowsing.blockedURIs.enabled" = true;
+      "browser.safebrowsing.downloads.enabled" = true;
+      "browser.safebrowsing.provider.google4.gethashURL" = "https://safebrowsing.googleapis.com/v4/fullHashes:find?$ct=application/x-protobuf&key=%GOOGLE_SAFEBROWSING_API_KEY%&$httpMethod=POST";
+      "browser.safebrowsing.provider.google4.updateURL" = "https://safebrowsing.googleapis.com/v4/threatListUpdates:fetch?$ct=application/x-protobuf&key=%GOOGLE_SAFEBROWSING_API_KEY%&$httpMethod=POST";
+      "browser.safebrowsing.provider.google.gethashURL" = "https://safebrowsing.google.com/safebrowsing/gethash?client=SAFEBROWSING_ID&appver=%MAJOR_VERSION%&pver=2.2";
+      "browser.safebrowsing.provider.google.updateURL" = "https://safebrowsing.google.com/safebrowsing/downloads?client=SAFEBROWSING_ID&appver=%MAJOR_VERSION%&pver=2.2&key=%GOOGLE_SAFEBROWSING_API_KEY%";
+    };
+  };
 
   programs.freetube = {
     enable = true;
@@ -152,38 +119,33 @@ in
     package = config.lib.nixGL.wrap pkgs.vscode;
     profiles.default.extensions = with pkgs.vscode-extensions; [
       ms-vscode-remote.remote-containers
-      asvetliakov.vscode-neovim
     ];
   };
 
   programs.neovim = {
     enable = true;
-    defaultEditor = true;
     viAlias = true;
     vimAlias = true;
     vimdiffAlias = true;
     plugins = with pkgs.vimPlugins; [
-      # vim-vinegar
+      vim-vinegar
       vim-unimpaired
       vim-surround
       vim-sleuth
       vim-sensible
       vim-repeat
-      # vim-rails
       vim-ragtag
-      # vim-pandoc-syntax
-      # vim-pandoc
       vim-fugitive
       vim-eunuch
       vim-endwise
       vim-abolish
       fzf-vim
-      editorconfig-vim
     ];
   };
 
   programs.fzf = {
     enable = true;
+    package = stablepkgs.fzf;
     enableBashIntegration = true;
   };
 
@@ -198,73 +160,27 @@ in
     };
   };
 
-  # Home Manager is pretty good at managing dotfiles. The primary way to manage
-  # plain files is through 'home.file'.
-  home.file = {
-    # # Building this configuration will create a copy of 'dotfiles/screenrc' in
-    # # the Nix store. Activating the configuration will then make '~/.screenrc' a
-    # # symlink to the Nix store copy.
-    # ".screenrc".source = dotfiles/screenrc;
-
-    # # You can also set the file content immediately.
-    # ".gradle/gradle.properties".text = ''
-    #   org.gradle.console=verbose
-    #   org.gradle.daemon.idletimeout=3600000
-    # '';
-  };
-
-  # Home Manager can also manage your environment variables through
-  # 'home.sessionVariables'. These will be explicitly sourced when using a
-  # shell provided by Home Manager. If you don't want to manage your shell
-  # through Home Manager then you have to manually source 'hm-session-vars.sh'
-  # located at either
-  #
-  #  ~/.nix-profile/etc/profile.d/hm-session-vars.sh
-  #
-  # or
-  #
-  #  ~/.local/state/nix/profiles/profile/etc/profile.d/hm-session-vars.sh
-  #
-  # or
-  #
-  #  /etc/profiles/per-user/sebastian/etc/profile.d/hm-session-vars.sh
-  #
-  home.sessionVariables = {
-    # EDITOR = "vi";
-  };
-
   nixpkgs.config.allowUnfree = true;
 
   # Let Home Manager install and manage itself.
-  programs.home-manager = {
-    enable = true;
-  };
+  # programs.home-manager = {
+  #   enable = true;
+  # };
 
-  services.home-manager.autoExpire = {
-    enable = true;
-    frequency = "weekly";
-    store.cleanup = true;
-  };
+  # services.home-manager.autoExpire = {
+  #   enable = true;
+  #   frequency = "weekly";
+  #   store.cleanup = true;
+  # };
 
   systemd.user = {
     services = {
       
-      # exo = {
-      #   Unit = {
-      #     Description = "Run your own AI cluster at home with everyday devices.";
-      #   };
-      #   Install = {
-      #     WantedBy = [ "default.target" ];
-      #   };
-      #   Service = {
-      #     ExecStart = "${exo}/bin/exo --disable-tui";
-      #   };
-      # };
-
       simple-http-server = {
         Unit = {
           Description = "An http server to share files";
           Wants = [ "var-home-sebastian-Public.mount" ];
+          After = [ "var-home-sebastian-Public.mount" ];
         };
         Install = {
           WantedBy = [ "default.target" ];
@@ -283,7 +199,7 @@ in
         Service = {
           ExecStart = "${pkgs.ollama}/bin/ollama serve";
           Restart = "always";
-          RestartSec = 10;
+          RestartSec = 59;
           Environment = "PATH=$PATH";
         };
         Install = {
