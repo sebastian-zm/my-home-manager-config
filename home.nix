@@ -1,8 +1,8 @@
 { config, pkgs, ... }:
 
 let
-  stablepkgs = import <nixos-stable> { config.allowUnfree = true; };
-  nixgl = import <nixgl> {};
+  stablepkgs = import <nixpkgs-stable> { config.allowUnfree = true; };
+  nixgl = import <nixGL> {};
 in
 {
   # Home Manager needs a bit of information about you and the paths it should

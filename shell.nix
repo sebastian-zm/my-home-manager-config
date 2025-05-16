@@ -2,9 +2,13 @@ let
 
   sources = import ./nix/sources.nix;
 
-  nixpkgs = sources."nixpkgs-unstable";
+  nixpkgsUnstable = sources."nixpkgs-unstable";
+  nixpkgsStable = sources."nixpkgs-stable";
+  nixGL = sources."nixGL";
+  home-manager = sources."home-manager";
 
-  pkgs = import nixpkgs {};
+  pkgs = import nixpkgsUnstable { };
+  homeMgr = import home-manager { inherit pkgs; };
 
 in pkgs.mkShell rec {
 
@@ -12,11 +16,15 @@ in pkgs.mkShell rec {
 
   buildInputs = with pkgs; [
     niv
-    (import sources.home-manager {inherit pkgs;}).home-manager
+    homeMgr.home-manager
   ];
 
   shellHook = ''
-    export NIX_PATH="nixpkgs=${nixpkgs}:home-manager=${sources."home-manager"}"
+    export NIX_PATH="
+      nixpkgs=${nixpkgsUnstable}:
+      nixpkgs-stable=${nixpkgsStable}:
+      nixGL=${nixGL}:
+      home-manager=${home-manager}"
     export HOME_MANAGER_CONFIG="./home.nix"
   '';
 
