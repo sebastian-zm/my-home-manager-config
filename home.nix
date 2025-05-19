@@ -3,6 +3,8 @@
 let
   stablepkgs = import <nixpkgs-stable> { config.allowUnfree = true; };
   nixgl = import <nixGL> {};
+  netrw-nvim = <netrw-nvim>;
+  nvim-web-devicons = <nvim-web-devicons>;
 in
 {
   # Home Manager needs a bit of information about you and the paths it should
@@ -28,23 +30,19 @@ in
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with stablepkgs; [
-    # (pkgs.writeShellScriptBin "vim-plugin" ''
-    #   find $HOME/.vim/pack/*/start/ -maxdepth 1 -mindepth 1 -type d | ${pkgs.parallel}/bin/parallel git -C {} pull
-    #   ${pkgs.vim}/bin/vim -u NONE -c "helptags ALL" -c q
-    # '')
     (writeShellScriptBin "llm" ''
       ${pkgs.ollama}/bin/ollama run qwen3:30b
     '')
     (writeShellScriptBin "git-to-llm" ''
-      GIT=${pkgs.git}/bin/git
+      GIT=${git}/bin/git
       # Ensure we're in a git repository
-      if ! git rev-parse --is-inside-work-tree &>/dev/null; then
+      if ! $GIT rev-parse --is-inside-work-tree &>/dev/null; then
           echo "Error: Not in a git repository."
           exit 1
       fi
 
       # Retrieve the list of files (tracked, untracked, and not ignored)
-      git ls-files --cached --others --exclude-standard | while read -r file; do
+      $GIT ls-files --cached --others --exclude-standard | while read -r file; do
           echo 'file path: `'"$file"'`'
           echo 'file contents: '
 
@@ -76,7 +74,7 @@ in
     pkgs.ollama
     imagemagick
   ] ++ (map config.lib.nixGL.wrap [
-    ciscoPacketTracer8
+    pkgs.ciscoPacketTracer8
     pinta
     minder
     pkgs.whatsie
@@ -87,6 +85,7 @@ in
     prismlauncher
     inkscape-with-extensions
     krita
+    nerdfonts
     pkgs.azahar
     kdePackages.kcalc
     kdePackages.kalgebra
@@ -94,24 +93,9 @@ in
     kdePackages.kamera
   ]);
 
-  programs.librewolf = {
-    enable = true;
-    settings = {
-      "privacy.resistFingerprinting.letterboxing" = true;
-      "browser.safebrowsing.malware.enabled" = true;
-      "browser.safebrowsing.phishing.enabled" = true;
-      "browser.safebrowsing.blockedURIs.enabled" = true;
-      "browser.safebrowsing.downloads.enabled" = true;
-      "browser.safebrowsing.provider.google4.gethashURL" = "https://safebrowsing.googleapis.com/v4/fullHashes:find?$ct=application/x-protobuf&key=%GOOGLE_SAFEBROWSING_API_KEY%&$httpMethod=POST";
-      "browser.safebrowsing.provider.google4.updateURL" = "https://safebrowsing.googleapis.com/v4/threatListUpdates:fetch?$ct=application/x-protobuf&key=%GOOGLE_SAFEBROWSING_API_KEY%&$httpMethod=POST";
-      "browser.safebrowsing.provider.google.gethashURL" = "https://safebrowsing.google.com/safebrowsing/gethash?client=SAFEBROWSING_ID&appver=%MAJOR_VERSION%&pver=2.2";
-      "browser.safebrowsing.provider.google.updateURL" = "https://safebrowsing.google.com/safebrowsing/downloads?client=SAFEBROWSING_ID&appver=%MAJOR_VERSION%&pver=2.2&key=%GOOGLE_SAFEBROWSING_API_KEY%";
-    };
-  };
-
   programs.freetube = {
     enable = true;
-    package = config.lib.nixGL.wrap pkgs.freetube; 
+    package = config.lib.nixGL.wrap stablepkgs.freetube; 
   };
 
   programs.vscode = {
@@ -127,19 +111,33 @@ in
     viAlias = true;
     vimAlias = true;
     vimdiffAlias = true;
-    plugins = with pkgs.vimPlugins; [
-      vim-vinegar
-      vim-unimpaired
-      vim-surround
-      vim-sleuth
-      vim-sensible
-      vim-repeat
-      vim-ragtag
-      vim-fugitive
-      vim-eunuch
-      vim-endwise
-      vim-abolish
-      fzf-vim
+    plugins = (with pkgs.vimPlugins; [
+      # vim-unimpaired
+      # vim-surround
+      # vim-sleuth
+      # vim-sensible
+      # vim-repeat
+      # vim-ragtag
+      # vim-fugitive
+      # vim-eunuch
+      # vim-endwise
+      # vim-abolish
+      # fzf-vim
+    ]) ++ [
+      { plugin = pkgs.vimUtils.buildVimPlugin {
+                   name = "netrw.nvim";
+                   src = "${netrw-nvim}";
+		 };
+	type = "lua";
+	config = ''require("netrw").setup({use_devicons = true})'';
+      }
+      { plugin = pkgs.vimUtils.buildVimPlugin {
+                   name = "nvim-web-devicons";
+                   src = "${nvim-web-devicons}";
+		 };
+	type = "lua";
+	config = "require'nvim-web-devicons'.setup {}";
+      }
     ];
   };
 
@@ -151,8 +149,9 @@ in
 
   programs.git = {
     enable = true;
+    package = stablepkgs.git;
     userName = "Sebastian";
-    userEmail = "sebastian@example.invalid";
+    userEmail = "sebastian@sebastian.software";
     extraConfig = {
       init = {
         defaultBranch = "main";
@@ -161,17 +160,6 @@ in
   };
 
   nixpkgs.config.allowUnfree = true;
-
-  # Let Home Manager install and manage itself.
-  # programs.home-manager = {
-  #   enable = true;
-  # };
-
-  # services.home-manager.autoExpire = {
-  #   enable = true;
-  #   frequency = "weekly";
-  #   store.cleanup = true;
-  # };
 
   systemd.user = {
     services = {
@@ -188,6 +176,8 @@ in
         Service = {
           ExecStart = "${pkgs.simple-http-server}/bin/simple-http-server --upload --port 4080";
           WorkingDirectory = "/home/sebastian/Public/";
+          Restart = "always";
+          RestartSec = 58;
         };
       };
 

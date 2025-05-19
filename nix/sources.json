@@ -5,10 +5,22 @@
         "homepage": "https://rycee.gitlab.io/home-manager/",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "d2263ce5f4c251c0f7608330e8fdb7d1f01f0667",
-        "sha256": "1chmjv28x3x3cjnjxqh289rlmz4j1zblzw0w2gdm4ax6k82xlgr5",
+        "rev": "97118a310eb8e13bc1b9b12d67267e55b7bee6c8",
+        "sha256": "104nwi65dvkrldyflmj03fi9wmj5gdwn0s67qpqmhpq4fllfda07",
         "type": "tarball",
-        "url": "https://github.com/nix-community/home-manager/archive/d2263ce5f4c251c0f7608330e8fdb7d1f01f0667.tar.gz",
+        "url": "https://github.com/nix-community/home-manager/archive/97118a310eb8e13bc1b9b12d67267e55b7bee6c8.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "netrw.nvim": {
+        "branch": "master",
+        "description": "It's not because we use netrw that we cannot have nice things! ",
+        "homepage": "",
+        "owner": "prichrd",
+        "repo": "netrw.nvim",
+        "rev": "90501c62b9b816ed3ed1e912ae9db9af5671a1b2",
+        "sha256": "1m8pnhy9si734k0i95fyn0yn4swwmavpj1s22qp2ss75djibwhxl",
+        "type": "tarball",
+        "url": "https://github.com/prichrd/netrw.nvim/archive/90501c62b9b816ed3ed1e912ae9db9af5671a1b2.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "niv": {
@@ -41,10 +53,10 @@
         "homepage": "",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "5d736263df906c5da72ab0f372427814de2f52f8",
-        "sha256": "1cvxfj03xhakyrrz8bh4499vz5d35ay92575irrbmydcxixsrf3w",
+        "rev": "9b5ac7ad45298d58640540d0323ca217f32a6762",
+        "sha256": "0zqvvkb1gsqxvm2vvp184spm1kc363sx0byv7cdxmmj4wk51kfv1",
         "type": "tarball",
-        "url": "https://github.com/nixos/nixpkgs/archive/5d736263df906c5da72ab0f372427814de2f52f8.tar.gz",
+        "url": "https://github.com/nixos/nixpkgs/archive/9b5ac7ad45298d58640540d0323ca217f32a6762.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs-unstable": {
@@ -53,10 +65,22 @@
         "homepage": "",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "b1bebd0fe266bbd1820019612ead889e96a8fa2d",
-        "sha256": "0fl2dji5whjydbxby9b7kqyqx9m4k44p72x1q28kfnx5m67nyqij",
+        "rev": "3fcbdcfc707e0aa42c541b7743e05820472bdaec",
+        "sha256": "1sxs59sq44ngy51h46f24mfks0mrdbsqhgapdn0kxs9dkn6dn594",
         "type": "tarball",
-        "url": "https://github.com/nixos/nixpkgs/archive/b1bebd0fe266bbd1820019612ead889e96a8fa2d.tar.gz",
+        "url": "https://github.com/nixos/nixpkgs/archive/3fcbdcfc707e0aa42c541b7743e05820472bdaec.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nvim-web-devicons": {
+        "branch": "master",
+        "description": "Provides Nerd Font icons (glyphs) for use by neovim plugins",
+        "homepage": "",
+        "owner": "nvim-tree",
+        "repo": "nvim-web-devicons",
+        "rev": "1fb58cca9aebbc4fd32b086cb413548ce132c127",
+        "sha256": "0c69c4rwrrq9j5gwa17br5hpg28hvgl00apz06qgh5w2lwaxw4gr",
+        "type": "tarball",
+        "url": "https://github.com/nvim-tree/nvim-web-devicons/archive/1fb58cca9aebbc4fd32b086cb413548ce132c127.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
