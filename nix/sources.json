@@ -1,14 +1,38 @@
 {
+    "auto-dark-mode.nvim": {
+        "branch": "master",
+        "description": "A Neovim plugin for macOS, Linux & Windows that automatically changes the editor appearance based on system settings.",
+        "homepage": "",
+        "owner": "f-person",
+        "repo": "auto-dark-mode.nvim",
+        "rev": "c31de126963ffe9403901b4b0990dde0e6999cc6",
+        "sha256": "0ipix0fnnmvly2xrr6s97h54mx4m9nigksz53c782miyf2m649b4",
+        "type": "tarball",
+        "url": "https://github.com/f-person/auto-dark-mode.nvim/archive/c31de126963ffe9403901b4b0990dde0e6999cc6.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "home-manager": {
         "branch": "master",
         "description": "Manage a user environment using Nix",
         "homepage": "https://rycee.gitlab.io/home-manager/",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "97118a310eb8e13bc1b9b12d67267e55b7bee6c8",
-        "sha256": "104nwi65dvkrldyflmj03fi9wmj5gdwn0s67qpqmhpq4fllfda07",
+        "rev": "7419250703fd5eb50e99bdfb07a86671939103ea",
+        "sha256": "0x4x7arqgp5pmf8d9q1gyq9q1wvvr1qra7m8cqi74qx92mpjf155",
         "type": "tarball",
-        "url": "https://github.com/nix-community/home-manager/archive/97118a310eb8e13bc1b9b12d67267e55b7bee6c8.tar.gz",
+        "url": "https://github.com/nix-community/home-manager/archive/7419250703fd5eb50e99bdfb07a86671939103ea.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "mini.nvim": {
+        "branch": "main",
+        "description": "Library of 40+ independent Lua modules improving overall Neovim (version 0.8 and higher) experience with minimal effort",
+        "homepage": "",
+        "owner": "echasnovski",
+        "repo": "mini.nvim",
+        "rev": "14ce72476995255fc5cb919da8067f65865e1225",
+        "sha256": "1g0bqsgidbn4nm0wdnax6hnlvkmdq7df9lw95ng03w6rgwyz3fdr",
+        "type": "tarball",
+        "url": "https://github.com/echasnovski/mini.nvim/archive/14ce72476995255fc5cb919da8067f65865e1225.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "netrw.nvim": {
@@ -53,10 +77,10 @@
         "homepage": "",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "9b5ac7ad45298d58640540d0323ca217f32a6762",
-        "sha256": "0zqvvkb1gsqxvm2vvp184spm1kc363sx0byv7cdxmmj4wk51kfv1",
+        "rev": "2baa12ff69913392faf0ace833bc54bba297ea95",
+        "sha256": "0b98zjp4klps935sch2n0mysfr3l9sz13d2r74dsgnsnklsxm0ak",
         "type": "tarball",
-        "url": "https://github.com/nixos/nixpkgs/archive/9b5ac7ad45298d58640540d0323ca217f32a6762.tar.gz",
+        "url": "https://github.com/nixos/nixpkgs/archive/2baa12ff69913392faf0ace833bc54bba297ea95.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs-unstable": {
@@ -65,22 +89,10 @@
         "homepage": "",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "3fcbdcfc707e0aa42c541b7743e05820472bdaec",
-        "sha256": "1sxs59sq44ngy51h46f24mfks0mrdbsqhgapdn0kxs9dkn6dn594",
+        "rev": "e314d5c6d3b3a0f40ec5bcbc007b0cbe412f48ae",
+        "sha256": "049zgk55rk6x3m0v7xdcabnayc0l1rbbfvfg9fr9ky92f9g2wl12",
         "type": "tarball",
-        "url": "https://github.com/nixos/nixpkgs/archive/3fcbdcfc707e0aa42c541b7743e05820472bdaec.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "nvim-web-devicons": {
-        "branch": "master",
-        "description": "Provides Nerd Font icons (glyphs) for use by neovim plugins",
-        "homepage": "",
-        "owner": "nvim-tree",
-        "repo": "nvim-web-devicons",
-        "rev": "1fb58cca9aebbc4fd32b086cb413548ce132c127",
-        "sha256": "0c69c4rwrrq9j5gwa17br5hpg28hvgl00apz06qgh5w2lwaxw4gr",
-        "type": "tarball",
-        "url": "https://github.com/nvim-tree/nvim-web-devicons/archive/1fb58cca9aebbc4fd32b086cb413548ce132c127.tar.gz",
+        "url": "https://github.com/nixos/nixpkgs/archive/e314d5c6d3b3a0f40ec5bcbc007b0cbe412f48ae.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }

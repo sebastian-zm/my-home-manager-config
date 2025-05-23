@@ -3,10 +3,11 @@
 let
   stablepkgs = import <nixpkgs-stable> { config.allowUnfree = true; };
   nixgl = import <nixGL> {};
-  netrw-nvim = <netrw-nvim>;
-  nvim-web-devicons = <nvim-web-devicons>;
 in
 {
+  imports = [
+    ./modules/neovim.nix
+  ];
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "sebastian";
@@ -55,6 +56,9 @@ in
     (writeShellScriptBin "docker" ''
       PODMAN_COMPOSE_PROVIDER=${docker-compose}/bin/docker-compose DOCKER_HOST=unix:///run/user/$UID/podman/podman.sock PODMAN_USERNS=keep-id:uid=1000,gid=1000 exec podman "$@"
     '')
+    (writeShellScriptBin "dvc" ''
+      DOCKER_HOST=unix:///run/user/$UID/podman/podman.sock ${pkgs.devcontainer}/bin/devcontainer "$@"
+    '')
 
     docker-compose
     tcpdump
@@ -65,11 +69,12 @@ in
     uv
     nodenv
     websocat
+    pkgs.devcontainer
     pkgs.cloudflared
     simple-http-server
     nmap
-    bat
     btop
+    aider-chat
     dust
     pkgs.ollama
     imagemagick
@@ -85,7 +90,6 @@ in
     prismlauncher
     inkscape-with-extensions
     krita
-    nerdfonts
     pkgs.azahar
     kdePackages.kcalc
     kdePackages.kalgebra
@@ -95,7 +99,15 @@ in
 
   programs.freetube = {
     enable = true;
-    package = config.lib.nixGL.wrap stablepkgs.freetube; 
+    package = config.lib.nixGL.wrap stablepkgs.freetube;
+  };
+
+  programs.ripgrep = {
+    enable = true;
+    arguments = [
+      "--hidden"
+      "--smart-case"
+    ];
   };
 
   programs.vscode = {
@@ -106,45 +118,19 @@ in
     ];
   };
 
-  programs.neovim = {
-    enable = true;
-    viAlias = true;
-    vimAlias = true;
-    vimdiffAlias = true;
-    plugins = (with pkgs.vimPlugins; [
-      # vim-unimpaired
-      # vim-surround
-      # vim-sleuth
-      # vim-sensible
-      # vim-repeat
-      # vim-ragtag
-      # vim-fugitive
-      # vim-eunuch
-      # vim-endwise
-      # vim-abolish
-      # fzf-vim
-    ]) ++ [
-      { plugin = pkgs.vimUtils.buildVimPlugin {
-                   name = "netrw.nvim";
-                   src = "${netrw-nvim}";
-		 };
-	type = "lua";
-	config = ''require("netrw").setup({use_devicons = true})'';
-      }
-      { plugin = pkgs.vimUtils.buildVimPlugin {
-                   name = "nvim-web-devicons";
-                   src = "${nvim-web-devicons}";
-		 };
-	type = "lua";
-	config = "require'nvim-web-devicons'.setup {}";
-      }
-    ];
-  };
 
   programs.fzf = {
     enable = true;
     package = stablepkgs.fzf;
     enableBashIntegration = true;
+  };
+
+  programs.bat = {
+    enable = true;
+    package = stablepkgs.bat;
+    config = {
+      theme = "ansi";
+    };
   };
 
   programs.git = {
@@ -163,7 +149,7 @@ in
 
   systemd.user = {
     services = {
-      
+
       simple-http-server = {
         Unit = {
           Description = "An http server to share files";
@@ -190,7 +176,7 @@ in
           ExecStart = "${pkgs.ollama}/bin/ollama serve";
           Restart = "always";
           RestartSec = 59;
-          Environment = "PATH=$PATH";
+          Environment = [ "PATH=$PATH" "OLLAMA_ORIGINS=*.typingmind.com" "OLLAMA_HOST=localhost"];
         };
         Install = {
           WantedBy = [ "default.target" ];

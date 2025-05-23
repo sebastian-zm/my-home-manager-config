@@ -6,8 +6,9 @@ let
   nixpkgsStable = sources."nixpkgs-stable";
   nixGL = sources."nixGL";
   home-manager = sources."home-manager";
+  mini-nvim = sources."mini.nvim";
   netrw-nvim = sources."netrw.nvim";
-  nvim-web-devicons = sources."nvim-web-devicons";
+  auto-dark-mode-nvim = sources."auto-dark-mode.nvim";
 
   pkgs = import nixpkgsUnstable { };
   homeMgr = import home-manager { inherit pkgs; };
@@ -26,9 +27,7 @@ in pkgs.mkShell rec {
       nixpkgs=${nixpkgsUnstable}:
       nixpkgs-stable=${nixpkgsStable}:
       nixGL=${nixGL}:
-      home-manager=${home-manager}:
-      netrw-nvim=${netrw-nvim}:
-      nvim-web-devicons=${nvim-web-devicons}"
+      home-manager=${home-manager}"
     export HOME_MANAGER_CONFIG="./home.nix"
   '';
 
