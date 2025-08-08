@@ -79,7 +79,6 @@ in
     pkgs.ollama
     imagemagick
   ] ++ (map config.lib.nixGL.wrap [
-    pkgs.ciscoPacketTracer8
     pinta
     minder
     pkgs.whatsie
