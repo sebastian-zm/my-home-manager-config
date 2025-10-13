@@ -1,12 +1,14 @@
 { config, pkgs, ... }:
 
 let
-  stablepkgs = import <nixpkgs-stable> { config.allowUnfree = true; };
-  nixgl = import <nixGL> {};
-in
-{
+  sources = import ./nix/sources.nix {};
+  stablepkgs = import sources.nixpkgs-stable { config.allowUnfree = true; };
+  nixgl = import sources.nixGL {};
+
+in {
   imports = [
     ./modules/neovim.nix
+    ./modules/whisper.nix
   ];
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
@@ -14,11 +16,7 @@ in
   home.homeDirectory = "/home/sebastian";
 
   # This value determines the Home Manager release that your configuration is
-  # compatible with. This helps avoid breakage when a new Home Manager release
-  # introduces backwards incompatible changes.
-  #
-  # You should not change this value, even if you update Home Manager. If you do
-  # want to update the value, then make sure to first check the Home Manager
+  # compatible with. This helps avoid breakage when a new Home Manager release introduces backwards incompatible changes. You should not change this value, even if you update Home Manager. If you do want to update the value, then make sure to first check the Home Manager
   # release notes.
   home.stateVersion = "24.05"; # Please read the comment before changing.
 
@@ -31,9 +29,6 @@ in
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with stablepkgs; [
-    (writeShellScriptBin "llm" ''
-      ${pkgs.ollama}/bin/ollama run qwen3:30b
-    '')
     (writeShellScriptBin "git-to-llm" ''
       GIT=${git}/bin/git
       # Ensure we're in a git repository
@@ -46,20 +41,16 @@ in
       $GIT ls-files --cached --others --exclude-standard | while read -r file; do
           echo 'file path: `'"$file"'`'
           echo 'file contents: '
-
           echo '```'
           cat "$file"
           echo '```'
       done
     '')
-    # Uses system podman
-    (writeShellScriptBin "docker" ''
-      PODMAN_COMPOSE_PROVIDER=${docker-compose}/bin/docker-compose DOCKER_HOST=unix:///run/user/$UID/podman/podman.sock PODMAN_USERNS=keep-id:uid=1000,gid=1000 exec podman "$@"
-    '')
     (writeShellScriptBin "dvc" ''
       DOCKER_HOST=unix:///run/user/$UID/podman/podman.sock ${pkgs.devcontainer}/bin/devcontainer "$@"
     '')
 
+    postman
     docker-compose
     tcpdump
     wl-clipboard
@@ -67,21 +58,26 @@ in
     libtree
     jq
     uv
+    niv
     nodenv
     websocat
-    pkgs.devcontainer
-    pkgs.cloudflared
     simple-http-server
+    poweralertd
     nmap
     btop
+    gitlab-runner
     aider-chat
+    python312Packages.conda
     dust
-    pkgs.ollama
     imagemagick
+    pkgs.devcontainer
+    pkgs.cloudflared
+    pkgs.codex
   ] ++ (map config.lib.nixGL.wrap [
     pinta
     minder
-    pkgs.whatsie
+    slack
+    remmina
     flowblade
     wpsoffice
     libreoffice
@@ -89,7 +85,6 @@ in
     prismlauncher
     inkscape-with-extensions
     krita
-    pkgs.azahar
     kdePackages.kcalc
     kdePackages.kalgebra
     kdePackages.skanpage
@@ -107,6 +102,11 @@ in
       "--hidden"
       "--smart-case"
     ];
+  };
+
+  programs.direnv = {
+    enable = true;
+    enableBashIntegration = true;
   };
 
   programs.vscode = {
@@ -144,38 +144,53 @@ in
     };
   };
 
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config = {
+    allowUnfree = true;
+    permittedInsecurePackages = [
+      "qtwebengine-5.15.19"
+    ];
+  };
 
   systemd.user = {
     services = {
 
-      simple-http-server = {
+      typingmind-mcp-server = {
         Unit = {
-          Description = "An http server to share files";
-          Wants = [ "var-home-sebastian-Public.mount" ];
-          After = [ "var-home-sebastian-Public.mount" ];
+          Description = "TypingMind MCP server";
         };
+
+        Service = {
+          Type = "simple";
+          WorkingDirectory = "%h";
+          Environment = [
+            "HOSTNAME=localhost"
+	          "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${pkgs.nodejs_24}/bin"
+          ];
+	        EnvironmentFile = "%h/.config/systemd/user/typingmind-mcp-server.env";
+          ExecStart = "${pkgs.nodejs_24}/bin/npx -y @typingmind/mcp";
+
+          Restart = "always";
+          RestartSec = 57;
+
+          StandardOutput = "journal";
+          StandardError  = "journal";
+
+          TimeoutStartSec = "2min";
+        };
+
         Install = {
           WantedBy = [ "default.target" ];
         };
-        Service = {
-          ExecStart = "${pkgs.simple-http-server}/bin/simple-http-server --upload --port 4080";
-          WorkingDirectory = "/home/sebastian/Public/";
-          Restart = "always";
-          RestartSec = 58;
-        };
       };
 
-      ollama = {
+      codemcp = {
         Unit = {
-          Description = "Ollama service";
-          After = "network-online.target";
+          Description = "codemcp server";
         };
         Service = {
-          ExecStart = "${pkgs.ollama}/bin/ollama serve";
+          ExecStart = "${pkgs.uv}/bin/uvx --from ${sources.codemcp} codemcp serve --port 4081";
           Restart = "always";
-          RestartSec = 59;
-          Environment = [ "PATH=$PATH" "OLLAMA_ORIGINS=*.typingmind.com" "OLLAMA_HOST=localhost"];
+          RestartSec = 58;
         };
         Install = {
           WantedBy = [ "default.target" ];

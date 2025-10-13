@@ -11,16 +11,40 @@
         "url": "https://github.com/f-person/auto-dark-mode.nvim/archive/e300259ec777a40b4b9e3c8e6ade203e78d15881.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
+    "codemcp": {
+        "branch": "prod",
+        "description": "Coding assistant MCP for Claude Desktop",
+        "homepage": "",
+        "owner": "ezyang",
+        "repo": "codemcp",
+        "rev": "41dfe735e1541d6db93f326e43db66f1e7038425",
+        "sha256": "1n2id6vzqsb4lp45s09xah8qwnv1nsi0vjdwzr7ppfw076i5rbi5",
+        "type": "tarball",
+        "url": "https://github.com/ezyang/codemcp/archive/41dfe735e1541d6db93f326e43db66f1e7038425.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "guess-indent.nvim": {
+        "branch": "main",
+        "description": "Automatic indentation style detection for Neovim",
+        "homepage": "",
+        "owner": "NMAC427",
+        "repo": "guess-indent.nvim",
+        "rev": "84a4987ff36798c2fc1169cbaff67960aed9776f",
+        "sha256": "0fq6f4k0j10m3ic5a6px4l4q4jqs7xxbh0j72kaqi1np4p069w9k",
+        "type": "tarball",
+        "url": "https://github.com/NMAC427/guess-indent.nvim/archive/84a4987ff36798c2fc1169cbaff67960aed9776f.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "home-manager": {
         "branch": "master",
         "description": "Manage a user environment using Nix",
         "homepage": "https://rycee.gitlab.io/home-manager/",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "cc2fa2331aebf9661d22bb507d362b39852ac73f",
-        "sha256": "1izrfmaxjyy3pb6c6y035cv87cl5549wfl9lgkb808zqcnc7br5r",
+        "rev": "5f06ceafc6c9b773a776b9195c3f47bbe1defa43",
+        "sha256": "0wannvsdv1q9kd3bwizba34gr4gigpncr5ghs4q9vwp6807qzd10",
         "type": "tarball",
-        "url": "https://github.com/nix-community/home-manager/archive/cc2fa2331aebf9661d22bb507d362b39852ac73f.tar.gz",
+        "url": "https://github.com/nix-community/home-manager/archive/5f06ceafc6c9b773a776b9195c3f47bbe1defa43.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "mini.nvim": {
@@ -29,10 +53,10 @@
         "homepage": "",
         "owner": "echasnovski",
         "repo": "mini.nvim",
-        "rev": "4035ef97407a6661ae9ff913ff980e271a658502",
-        "sha256": "1f28lkxhkd68xxipazn6900fnnx577zx2kz5a9a0myq41g1h472l",
+        "rev": "79654ef28182986dcdd9e2d3506d1728fc7c4f79",
+        "sha256": "1szy2p8h0zk0j1wy8plma7ki923fr6f2iw7w2457krr67jnlf8y8",
         "type": "tarball",
-        "url": "https://github.com/echasnovski/mini.nvim/archive/4035ef97407a6661ae9ff913ff980e271a658502.tar.gz",
+        "url": "https://github.com/echasnovski/mini.nvim/archive/79654ef28182986dcdd9e2d3506d1728fc7c4f79.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "netrw.nvim": {
@@ -89,10 +113,29 @@
         "homepage": "",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "a683adc19ff5228af548c6539dbc3440509bfed3",
-        "sha256": "02fhyahw64018a7a05n6vp6h1hynda9jyp0r533yb4nh0h1ydfbx",
+        "rev": "d7f52a7a640bc54c7bb414cca603835bf8dd4b10",
+        "sha256": "0c9kjncpmbdx6gwww9fn81hyr3bngi4hg51g4n2q4808c321kf4j",
         "type": "tarball",
-        "url": "https://github.com/nixos/nixpkgs/archive/a683adc19ff5228af548c6539dbc3440509bfed3.tar.gz",
+        "url": "https://github.com/nixos/nixpkgs/archive/d7f52a7a640bc54c7bb414cca603835bf8dd4b10.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nvim-lspconfig": {
+        "branch": "master",
+        "description": "Quickstart configs for Nvim LSP",
+        "homepage": "",
+        "owner": "neovim",
+        "repo": "nvim-lspconfig",
+        "rev": "e688b486fe9291f151eae7e5c0b5a5c4ef980847",
+        "sha256": "07gia53y7fa5i1rc0v4l40z2fjfd6vgfgsmb0dfz6hr46n6sz7ib",
+        "type": "tarball",
+        "url": "https://github.com/neovim/nvim-lspconfig/archive/e688b486fe9291f151eae7e5c0b5a5c4ef980847.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "whisper-model": {
+        "sha256": "1lcav7n277z1dm0ax7vksnmq1iyq99h006cxm3xbb0rzzzn9amyp",
+        "type": "file",
+        "url": "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large-v3-q5_0.bin",
+        "url_template": "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-<version>.bin",
+        "version": "large-v3-q5_0"
     }
 }
