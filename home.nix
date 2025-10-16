@@ -52,7 +52,6 @@ in {
 
     postman
     docker-compose
-    tcpdump
     wl-clipboard
     parallel
     libtree
@@ -62,18 +61,22 @@ in {
     nodenv
     websocat
     simple-http-server
-    poweralertd
-    nmap
     btop
-    gitlab-runner
-    aider-chat
     python312Packages.conda
     dust
     imagemagick
+    hexedit
+    apktool
+    nmap
     pkgs.devcontainer
     pkgs.cloudflared
     pkgs.codex
   ] ++ (map config.lib.nixGL.wrap [
+    jadx
+    ghidra
+    wireshark
+    audacity
+    burpsuite
     pinta
     minder
     slack
@@ -147,7 +150,7 @@ in {
   nixpkgs.config = {
     allowUnfree = true;
     permittedInsecurePackages = [
-      "qtwebengine-5.15.19"
+      # "qtwebengine-5.15.19"
     ];
   };
 

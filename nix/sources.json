@@ -41,10 +41,10 @@
         "homepage": "https://rycee.gitlab.io/home-manager/",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "5f06ceafc6c9b773a776b9195c3f47bbe1defa43",
-        "sha256": "0wannvsdv1q9kd3bwizba34gr4gigpncr5ghs4q9vwp6807qzd10",
+        "rev": "c53e65ec92f38d30e3c14f8d628ab55d462947aa",
+        "sha256": "03z33p28hgwkgaynkl6w0akwbfrkgsb217073b9lhyd9h0bkixnd",
         "type": "tarball",
-        "url": "https://github.com/nix-community/home-manager/archive/5f06ceafc6c9b773a776b9195c3f47bbe1defa43.tar.gz",
+        "url": "https://github.com/nix-community/home-manager/archive/c53e65ec92f38d30e3c14f8d628ab55d462947aa.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "mini.nvim": {
@@ -53,10 +53,10 @@
         "homepage": "",
         "owner": "echasnovski",
         "repo": "mini.nvim",
-        "rev": "79654ef28182986dcdd9e2d3506d1728fc7c4f79",
-        "sha256": "1szy2p8h0zk0j1wy8plma7ki923fr6f2iw7w2457krr67jnlf8y8",
+        "rev": "89eecd8b4c15f8de72dd4b5244534abed8dc086f",
+        "sha256": "0kmarx7nsijwh301xhlqyz9kff90zlibkainq14dx88vvap6z5cz",
         "type": "tarball",
-        "url": "https://github.com/echasnovski/mini.nvim/archive/79654ef28182986dcdd9e2d3506d1728fc7c4f79.tar.gz",
+        "url": "https://github.com/echasnovski/mini.nvim/archive/89eecd8b4c15f8de72dd4b5244534abed8dc086f.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "netrw.nvim": {
@@ -113,10 +113,10 @@
         "homepage": "",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "d7f52a7a640bc54c7bb414cca603835bf8dd4b10",
-        "sha256": "0c9kjncpmbdx6gwww9fn81hyr3bngi4hg51g4n2q4808c321kf4j",
+        "rev": "2ea123939c5cb71d2761896c27e475aeab266364",
+        "sha256": "1ii5fv271mi0v38zahyfmsbl9gaksfqlxc2ln2kw1nhxz84s6flc",
         "type": "tarball",
-        "url": "https://github.com/nixos/nixpkgs/archive/d7f52a7a640bc54c7bb414cca603835bf8dd4b10.tar.gz",
+        "url": "https://github.com/nixos/nixpkgs/archive/2ea123939c5cb71d2761896c27e475aeab266364.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nvim-lspconfig": {
@@ -125,10 +125,10 @@
         "homepage": "",
         "owner": "neovim",
         "repo": "nvim-lspconfig",
-        "rev": "e688b486fe9291f151eae7e5c0b5a5c4ef980847",
-        "sha256": "07gia53y7fa5i1rc0v4l40z2fjfd6vgfgsmb0dfz6hr46n6sz7ib",
+        "rev": "ac98db2f9f06a56498ec890a96928774eae412c3",
+        "sha256": "0ncrknyldkaf2i053bkmzd7x58jflsyv6y5fr1wnbq26ynrxf245",
         "type": "tarball",
-        "url": "https://github.com/neovim/nvim-lspconfig/archive/e688b486fe9291f151eae7e5c0b5a5c4ef980847.tar.gz",
+        "url": "https://github.com/neovim/nvim-lspconfig/archive/ac98db2f9f06a56498ec890a96928774eae412c3.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "whisper-model": {
